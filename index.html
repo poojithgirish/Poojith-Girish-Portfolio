@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poojith Girish | Portfolio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1f2937;
+            background-color: #f3f4f6;
+            /* Dynamic, layered CSS gradients for a thematic background */
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(200, 200, 200, 0.1) 0%, rgba(200, 200, 200, 0) 60%),
+                radial-gradient(circle at 90% 80%, rgba(150, 150, 150, 0.1) 0%, rgba(150, 150, 150, 0) 60%),
+                linear-gradient(135deg, #e0e8f0 0%, #f3f4f6 100%);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            z-index: 1;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(243, 244, 246, 0.9);
+            /* A semi-transparent overlay to ensure text readability */
+            z-index: -1;
+        }
+
+        .custom-card {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .project-card,
+        .skill-card,
+        .experience-card {
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease-in-out;
+        }
+
+        .project-card:hover,
+        .skill-card:hover,
+        .experience-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 75px;
+            height: 5px;
+            background-image: linear-gradient(to right, #4c51bf, #667eea);
+            border-radius: 9999px;
+        }
+
+        .hero-bg-svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: -1;
+            /* Subtle animation to make it dynamic */
+            animation: rotate-360 30s linear infinite;
+        }
+
+        @keyframes rotate-360 {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* New styles for the charts */
+        .chart-container {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            /* Prevent charts from spilling over */
+        }
+
+        .chart-container svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* New horizontal bar chart styles */
+        .h-bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 100%;
+            height: 100%;
+            padding: 1rem;
+        }
+
+        .h-bar-group {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .h-bar-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-right: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .h-bar-track {
+            flex-grow: 1;
+            background-color: #e5e7eb;
+            height: 16px;
+            border-radius: 9999px;
+            position: relative;
+        }
+
+        .h-bar-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease-out;
+        }
+
+        .h-bar-value {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #4b5563;
+            margin-left: 0.5rem;
+        }
+
+        /* Pie/Donut chart labels */
+        .pie-chart-labels {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .pie-chart-labels .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0 8px;
+        }
+
+        .pie-chart-labels .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0s 0.3s;
+            z-index: 100;
+        }
+
+        .modal.is-visible {
+            opacity: 1;
+            visibility: visible;
+            transition-delay: 0s;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .modal.is-visible .modal-content {
+            transform: scale(1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-blue-600">Poojith Girish</h1>
+            <div class="hidden md:flex space-x-8 font-medium">
+                <a href="#about" class="hover:text-blue-600 transition-colors">About</a>
+                <a href="#skills" class="hover:text-blue-600 transition-colors">Skills</a>
+                <a href="#projects" class="hover:text-blue-600 transition-colors">Projects</a>
+                <a href="#experience" class="hover:text-blue-600 transition-colors">Experience</a>
+                <a href="#contact" class="hover:text-blue-600 transition-colors">Contact</a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-gray-700 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg py-2">
+            <a href="#about" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">About</a>
+            <a href="#skills" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Skills</a>
+            <a href="#projects" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Projects</a>
+            <a href="#experience" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Experience</a>
+            <a href="#contact" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Contact</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Hero Section -->
+        <section id="about"
+            class="bg-gradient-to-r from-blue-600 to-indigo-800 rounded-2xl shadow-xl p-8 mb-16 text-center text-white fade-in relative overflow-hidden">
+            <div class="hero-bg-svg">
+                <!-- Abstract data visualization SVG for a thematic background -->
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+                    <defs>
+                        <radialGradient id="grad1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                            <stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0" />
+                            <stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:0.2" />
+                        </radialGradient>
+                    </defs>
+                    <g fill="none" stroke="url(#grad1)" stroke-width="0.5" stroke-opacity="0.8">
+                        <circle cx="50" cy="50" r="40" />
+                        <circle cx="50" cy="50" r="30" />
+                        <circle cx="50" cy="50" r="20" />
+                        <path d="M 10 50 L 90 50" />
+                        <path d="M 50 10 L 50 90" />
+                        <path d="M 20 20 L 80 80" />
+                        <path d="M 20 80 L 80 20" />
+                    </g>
+                    <g fill="#ffffff" fill-opacity="0.5">
+                        <circle cx="20" cy="20" r="1.5" />
+                        <circle cx="80" cy="20" r="1.5" />
+                        <circle cx="80" cy="80" r="1.5" />
+                        <circle cx="20" cy="80" r="1.5" />
+                        <circle cx="50" cy="10" r="1.5" />
+                        <circle cx="50" cy="90" r="1.5" />
+                        <circle cx="10" cy="50" r="1.5" />
+                        <circle cx="90" cy="50" r="1.5" />
+                    </g>
+                </svg>
+            </div>
+            <div class="flex flex-col items-center relative z-10">
+                <img src="https://placehold.co/150x150/ffffff/4a90e2?text=PG" alt="Poojith Girish"
+                    class="rounded-full w-36 h-36 mb-6 ring-4 ring-white ring-opacity-70">
+                <h2 class="text-4xl sm:text-5xl font-bold mb-2">Poojith Girish</h2>
+                <p class="text-xl sm:text-2xl font-medium mb-6">Master of Data Science Graduate</p>
+                <div class="max-w-3xl mx-auto">
+                    <p class="text-gray-200 leading-relaxed mb-8">
+                        Master of Data Science (Business Analytics) graduate from Deakin University with strong
+                        expertise in **Python, SQL, Tableau, and Machine Learning**. Experienced in applying data
+                        analytics, predictive modelling, and visualisation to solve business problems in domains
+                        including urban planning, workforce productivity, and supply chain optimisation. Adept at
+                        working with stakeholders to translate data into actionable insights. Currently seeking Data
+                        Analyst / Business Analyst / Graduate Data Science roles in Australia.
+                    </p>
+                    <div class="flex justify-center space-x-6">
+                        <a href="https://linkedin.com/in/poojith-girish-021520247" target="_blank"
+                            class="bg-white text-blue-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-200 transition-colors shadow-lg">
+                            LinkedIn
+                        </a>
+                        <button id="download-resume"
+                            class="bg-gray-800 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-900 transition-colors shadow-lg">
+                            Download Resume
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Skills Section -->
+        <section id="skills" class="mb-16 fade-in">
+            <h2 class="text-3xl font-bold text-center mb-12 section-title">Technical Skills</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Skill Card -->
+                <div class="bg-white rounded-xl p-6 custom-card text-center skill-card">
+                    <div class="flex flex-col items-center mb-4">
+                        <svg class="w-12 h-12 text-blue-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                        <h3 class="font-bold text-lg">Programming</h3>
+                    </div>
+                    <ul class="text-gray-600 text-sm space-y-1">
+                        <li>Python (Pandas, NumPy, Scikit-learn)</li>
+                        <li>R, SQL, C, C++</li>
+                    </ul>
+                </div>
+                <!-- Skill Card -->
+                <div class="bg-white rounded-xl p-6 custom-card text-center skill-card">
+                    <div class="flex flex-col items-center mb-4">
+                        <svg class="w-12 h-12 text-green-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0h2m-2 0h2m0 0h2m0 0h2m-4 0v-4a2 2 0 012-2h2a2 2 0 012 2v4m-4 0h2m-2 0h2m0 0h2m0 0h2m-4 0v-4a2 2 0 012-2h2a2 2 0 012 2v4"></path>
+                        </svg>
+                        <h3 class="font-bold text-lg">Data Visualisation</h3>
+                    </div>
+                    <ul class="text-gray-600 text-sm space-y-1">
+                        <li>Tableau, Power BI</li>
+                        <li>Matplotlib, Seaborn</li>
+                    </ul>
+                </div>
+                <!-- Skill Card -->
+                <div class="bg-white rounded-xl p-6 custom-card text-center skill-card">
+                    <div class="flex flex-col items-center mb-4">
+                        <svg class="w-12 h-12 text-purple-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                        <h3 class="font-bold text-lg">Machine Learning</h3>
+                    </div>
+                    <ul class="text-gray-600 text-sm space-y-1">
+                        <li>Regression, Classification, Clustering</li>
+                        <li>Predictive Modelling</li>
+                    </ul>
+                </div>
+                <!-- Skill Card -->
+                <div class="bg-white rounded-xl p-6 custom-card text-center skill-card">
+                    <div class="flex flex-col items-center mb-4">
+                        <svg class="w-12 h-12 text-red-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 9l3 3m0 0l3-3m-3 3v6m-9-9h12a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z" />
+                        </svg>
+                        <h3 class="font-bold text-lg">Big Data & Tools</h3>
+                    </div>
+                    <ul class="text-gray-600 text-sm space-y-1">
+                        <li>Hadoop, Spark, TensorFlow</li>
+                        <li>Git, APIs, Jupyter Notebook</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="mb-16 fade-in">
+            <h2 class="text-3xl font-bold text-center mb-12 section-title">Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                <!-- Project 1: Workforce Productivity & Absenteeism -->
+                <div id="project-1"
+                    class="card cursor-pointer bg-white rounded-xl p-6 shadow-md transition-shadow hover:shadow-lg"
+                    data-project-id="0">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Workforce Productivity & Absenteeism</h2>
+                    <div id="productivity-chart" class="chart-container"></div>
+                    <div class="text-xs text-center text-gray-500 mt-4">Projected reduction in absenteeism by
+                        department.</div>
+                </div>
+
+                <!-- Project 2: Sustainable Mobility & Emission Reduction -->
+                <div id="project-2"
+                    class="card cursor-pointer bg-white rounded-xl p-6 shadow-md transition-shadow hover:shadow-lg"
+                    data-project-id="1">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Sustainable Mobility & Emission Reduction</h2>
+                    <div id="mobility-chart" class="chart-container"></div>
+                    <div class="text-xs text-center text-gray-500 mt-4">Daily total of pedestrians and cyclists.</div>
+                </div>
+
+                <!-- Project 3: Supply Chain Transparency -->
+                <div id="project-3"
+                    class="card cursor-pointer bg-white rounded-xl p-6 shadow-md transition-shadow hover:shadow-lg"
+                    data-project-id="2">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Supply Chain Traceability</h2>
+                    <div id="supply-chain-chart" class="chart-container"></div>
+                    <div class="text-xs text-center text-gray-500 mt-4">Efficiency improvement from prototype
+                        implementation.</div>
+                </div>
+
+                <!-- Project 4: Customer Churn Prediction -->
+                <div id="project-4"
+                    class="card cursor-pointer bg-white rounded-xl p-6 shadow-md transition-shadow hover:shadow-lg"
+                    data-project-id="3">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Customer Churn Prediction Model</h2>
+                    <div id="churn-chart" class="chart-container"></div>
+                    <div class="text-xs text-center text-gray-500 mt-4">Quarterly churn rate after model
+                        implementation.</div>
+                </div>
+
+                <!-- Project 5: Sales Performance & Forecasting -->
+                <div id="project-5"
+                    class="card cursor-pointer bg-white rounded-xl p-6 shadow-md transition-shadow hover:shadow-lg"
+                    data-project-id="4">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Sales Performance & Forecasting</h2>
+                    <div id="sales-chart" class="chart-container"></div>
+                    <div class="text-xs text-center text-gray-500 mt-4">Monthly sales performance against forecast.
+                    </div>
+                </div>
+
+                <!-- Project 6: Customer Segmentation & Marketing Strategy -->
+                <div id="project-6"
+                    class="card cursor-pointer bg-white rounded-xl p-6 shadow-md transition-shadow hover:shadow-lg"
+                    data-project-id="5">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Customer Segmentation</h2>
+                    <div id="segmentation-chart" class="chart-container"></div>
+                    <div class="text-xs text-center text-gray-500 mt-4">Percentage of customers in different segments.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Professional Experience Section -->
+        <section id="experience" class="mb-16 fade-in">
+            <h2 class="text-3xl font-bold text-center mb-12 section-title">Professional Experience</h2>
+            <div class="space-y-8">
+                <!-- Experience Item 1 -->
+                <div class="bg-white rounded-xl p-6 custom-card experience-card">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
+                        <h3 class="text-xl font-bold text-gray-900">Data Science Intern</h3>
+                        <span class="text-sm font-medium text-gray-500">Oct 2024 - Jan 2025</span>
+                    </div>
+                    <p class="font-medium text-gray-700">Netcon Technologies India Pvt Ltd</p>
+                    <ul class="list-disc list-inside mt-2 text-gray-600 text-sm space-y-1">
+                        <li>Developed a Customer Churn Prediction model using **Python, R, and AWS**.</li>
+                        <li>Designed dashboards in **Tableau/Power BI** to visualise churn patterns and key metrics.
+                        </li>
+                        <li>Delivered insights that improved churn reduction strategies and enhanced customer retention
+                            planning.</li>
+                    </ul>
+                </div>
+                <!-- Experience Item 2 -->
+                <div class="bg-white rounded-xl p-6 custom-card experience-card">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
+                        <h3 class="text-xl font-bold text-gray-900">Trainee</h3>
+                        <span class="text-sm font-medium text-gray-500">Feb 2022 - Apr 2022</span>
+                    </div>
+                    <p class="font-medium text-gray-700">Wipro, Bangalore</p>
+                    <ul class="list-disc list-inside mt-2 text-gray-600 text-sm space-y-1">
+                        <li>Supported a Data Analytics & AI project, working with large datasets.</li>
+                        <li>Assisted in applying ML models to generate business insights.</li>
+                    </ul>
+                </div>
+                <!-- Experience Item 3 -->
+                <div class="bg-white rounded-xl p-6 custom-card experience-card">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
+                        <h3 class="text-xl font-bold text-gray-900">Intern</h3>
+                        <span class="text-sm font-medium text-gray-500">Sep 2021 - Jan 2022</span>
+                    </div>
+                    <p class="font-medium text-gray-700">CoachEd, Mysore</p>
+                    <ul class="list-disc list-inside mt-2 text-gray-600 text-sm space-y-1">
+                        <li>Designed and deployed a web application, improving usability and cross-team collaboration.
+                        </li>
+                        <li>Built experience in coding, debugging, and agile teamwork.</li>
+                    </ul>
+                </div>
+                <!-- Experience Item 4 -->
+                <div class="bg-white rounded-xl p-6 custom-card experience-card">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
+                        <h3 class="text-xl font-bold text-gray-900">Console Operator</h3>
+                        <span class="text-sm font-medium text-gray-500">Aug 2023 - Present</span>
+                    </div>
+                    <p class="font-medium text-gray-700">7-Eleven Australia, Lilydale</p>
+                    <ul class="list-disc list-inside mt-2 text-gray-600 text-sm space-y-1">
+                        <li>Ensured accuracy in high-volume transactions and optimised store operations.</li>
+                        <li>Strengthened teamwork, multitasking, and communication in fast-paced environments.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="bg-white rounded-xl shadow-lg p-8 custom-card text-center fade-in">
+            <h2 class="text-3xl font-bold text-center mb-8 section-title">Get in Touch</h2>
+            <p class="text-lg text-gray-600 mb-6">
+                I am actively seeking Data Analyst / Business Analyst / Graduate Data Science roles. Feel free to
+                contact me.
+            </p>
+            <div
+                class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 text-gray-700">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M16.2 8.7a1 1 0 00-1.4-1.4L13 9.6V4a1 1 0 10-2 0v5.6L9.2 7.3a1 1 0 00-1.4 1.4L11 12.4l-2.2 2.2a1 1 0 001.4 1.4L13 13.4v5.6a1 1 0 102 0v-5.6l1.8 1.8a1 1 0 001.4-1.4l-2.2-2.2z" />
+                    </svg>
+                    <span>0487421775</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm4.996-12.004l-1.077 1.077c.435.631.728 1.343.868 2.09l1.107-.221a8.007 8.007 0 00-.9-2.946zm-5.748 5.748L8.077 16.996a8.007 8.007 0 002.946-.9l.221 1.107c-.747.14-1.459.433-2.09.868zM6 12c0-3.309 2.691-6 6-6s6 2.691 6 6-2.691 6-6 6-6-2.691-6-6z" />
+                        <path d="M12 10a2 2 0 100 4 2 2 0 000-4z" />
+                    </svg>
+                    <span>pujithgirish@gmail.com</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal for Project Details -->
+    <div id="project-modal" class="modal">
+        <div class="modal-content custom-card w-full max-w-4xl mx-auto relative">
+            <button id="close-modal"
+                class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+            <h3 id="modal-title" class="text-3xl font-bold mb-4">Project Title</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <img id="modal-image" src="" alt="Project Image" class="rounded-lg shadow-md mb-4 w-full h-auto">
+                </div>
+                <div>
+                    <p id="modal-description" class="text-gray-600 leading-relaxed"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Temporary Message Box for Resume Download -->
+    <div id="message-box"
+        class="fixed bottom-8 right-8 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-xl hidden z-50 transition-opacity duration-300 opacity-0">
+        Resume download functionality is a placeholder.
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center py-6 mt-12">
+        <p>&copy; 2025 Poojith Girish. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu, Animations & Modal -->
+    <script>
+        // Project data with details
+        const projects = [{
+            id: 'project-1',
+            title: 'Workforce Productivity & Absenteeism Analysis',
+            image: 'https://placehold.co/600x400/3B82F6/ffffff?text=Productivity+Analysis',
+            description: `This project involved a comprehensive analysis of workforce data to understand and mitigate absenteeism and improve productivity. Using Python and Tableau, I identified key factors driving attrition and absenteeism, such as overtime, department-specific trends, and employee demographics. The key outcome was a set of data-driven scheduling recommendations that, when implemented, were projected to significantly reduce absenteeism and enhance overall workforce efficiency.`,
+        }, {
+            id: 'project-2',
+            title: 'Sustainable Mobility & Emission Reduction',
+            image: 'https://placehold.co/600x400/22C55E/ffffff?text=Sustainable+Mobility',
+            description: `This project focuses on analyzing real-time pedestrian and cycling sensor data to quantify the carbon emissions avoided by active transport in Melbourne. I used **Python** with libraries like **Pandas** to fetch and clean data from the City of Melbourne's API. Key steps included exploring temporal patterns, performing spatial clustering of sensors, assessing the impact of weather on CO₂ savings, and detecting anomalies. The work demonstrates proficiency in using data to support sustainable urban planning and environmental goals.`,
+        }, {
+            id: 'project-3',
+            title: 'Supply Chain Transparency - BeanLedger',
+            image: 'https://placehold.co/600x400/9B2C2C/ffffff?text=Supply+Chain+Traceability',
+            description: `I developed a prototype called "BeanLedger," a blockchain-inspired solution for enhancing transparency in the coffee supply chain. The project's core components were focused on ensuring traceability, implementing smart contracts, and promoting sustainability from the farm to the consumer. This project demonstrated the potential for using distributed ledger technology to improve trust, efficiency, and fairness in commodity trading.`,
+        }, {
+            id: 'project-4',
+            title: 'Customer Churn Prediction Model',
+            image: 'https://placehold.co/600x400/4F46E5/ffffff?text=Churn+Prediction',
+            description: `This project, developed during my internship, involved building a predictive model to identify customers at high risk of churning for a telecommunications company. I used a variety of tools including **Python, R, Pandas, SQL, MongoDB, and AWS** for data cleaning and model building. The model's performance was evaluated and visualized through dashboards created in **Tableau and Power BI**, providing the company with valuable insights to improve their customer retention strategies.`,
+        }, {
+            id: 'project-5',
+            title: 'Sales Performance & Forecasting',
+            image: 'https://placehold.co/600x400/F59E0B/ffffff?text=Sales+Forecasting',
+            description: `In this project, I created a dynamic dashboard to monitor sales performance against forecasted targets. The analysis involved cleaning and aggregating sales data, identifying trends, and using statistical methods to create a rolling forecast. The dashboard enabled stakeholders to make data-driven decisions, adjust marketing strategies in real-time, and quickly identify products or regions that were underperforming.`,
+        }, {
+            id: 'project-6',
+            title: 'Customer Segmentation & Marketing Strategy',
+            image: 'https://placehold.co/600x400/10B981/ffffff?text=Customer+Segmentation',
+            description: `This project involved segmenting a customer base into distinct groups based on purchasing behavior, demographics, and engagement levels. Using **clustering algorithms**, I identified key customer segments such as "High-Value," "Active," and "At-Risk." The final report provided a clear profile of each segment, along with tailored marketing strategies designed to maximize customer lifetime value and improve campaign ROI.`,
+        }, ];
+
+        // Mobile Menu Toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function () {
+            var mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when a link is clicked
+        var mobileLinks = document.querySelectorAll('#mobile-menu a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+
+        // Scroll Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Stop observing after animation
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.fade-in').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Resume Download Message Box
+        document.getElementById('download-resume').addEventListener('click', function () {
+            const msgBox = document.getElementById('message-box');
+            msgBox.classList.remove('hidden');
+            setTimeout(() => {
+                msgBox.classList.add('opacity-100');
+            }, 10); // Small delay to trigger transition
+            setTimeout(() => {
+                msgBox.classList.remove('opacity-100');
+                setTimeout(() => {
+                    msgBox.classList.add('hidden');
+                }, 300); // Wait for fade-out to complete
+            }, 3000);
+        });
+
+        // Chart Data
+        const productivityData = [{
+            label: 'HR',
+            value: 15
+        }, {
+            label: 'Finance',
+            value: 8
+        }, {
+            label: 'Tech',
+            value: 25
+        }, {
+            label: 'Ops',
+            value: 12
+        }, {
+            label: 'Mktg',
+            value: 18
+        }];
+        const mobilityData = {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            pedestrians: [5000, 5500, 6200, 7000, 6800, 4500, 4800],
+            cyclists: [1500, 1800, 2100, 2500, 2300, 1200, 1400]
+        };
+        const supplyChainData = [{
+            label: 'Week 1',
+            value: 20
+        }, {
+            label: 'Week 2',
+            value: 35
+        }, {
+            label: 'Week 3',
+            value: 50
+        }, {
+            label: 'Week 4',
+            value: 65
+        }];
+        const churnData = [{
+            label: 'Q1',
+            value: 12.5
+        }, {
+            label: 'Q2',
+            value: 9.8
+        }, {
+            label: 'Q3',
+            value: 8.5
+        }, {
+            label: 'Q4',
+            value: 7.2
+        }];
+        const salesData = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            actual: [450, 580, 620, 750, 810, 790],
+            forecast: [420, 550, 600, 700, 800, 770]
+        };
+        const segmentationData = [{
+            label: 'High Value',
+            value: 25
+        }, {
+            label: 'Active',
+            value: 40
+        }, {
+            label: 'New',
+            value: 20
+        }, {
+            label: 'At-Risk',
+            value: 15
+        }];
+
+
+        // Function to render a dynamic vertical bar chart
+        function renderVerticalBarChart(elementId, data, colorStart, colorEnd) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
+            container.classList.add('flex', 'items-end', 'justify-around', 'h-full', 'pb-4');
+            const maxVal = Math.max(...data.map(d => d.value)) * 1.1;
+
+            data.forEach(d => {
+                const barWrapper = document.createElement('div');
+                barWrapper.className = 'flex flex-col items-center justify-end h-full w-1/5 relative group';
+
+                const bar = document.createElement('div');
+                bar.className = 'w-full rounded-t-lg transition-all duration-500 ease-out transform group-hover:scale-105';
+                bar.style.height = `${(d.value / maxVal) * 90}%`;
+                bar.style.backgroundImage = `linear-gradient(to top, ${colorStart}, ${colorEnd})`;
+
+                const valueText = document.createElement('span');
+                valueText.className = 'absolute top-0 transform -translate-y-full mb-2 text-xs font-semibold text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300';
+                valueText.textContent = d.value;
+
+                const labelText = document.createElement('span');
+                labelText.className = 'mt-2 text-xs font-medium text-gray-500 text-center';
+                labelText.textContent = d.label;
+
+                barWrapper.appendChild(valueText);
+                barWrapper.appendChild(bar);
+                barWrapper.appendChild(labelText);
+                container.appendChild(barWrapper);
+            });
+        }
+
+
+        // Function to render a dynamic horizontal bar chart
+        function renderHorizontalBarChart(elementId, data, colorStart, colorEnd) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
+            container.classList.add('flex', 'flex-col', 'justify-around', 'w-full', 'h-full', 'p-4');
+            container.style.overflowX = 'hidden';
+
+            const maxVal = Math.max(...data.map(d => d.value)) * 1.1;
+
+            data.forEach(d => {
+                const barGroup = document.createElement('div');
+                barGroup.className = 'flex items-center w-full mb-2 group';
+
+                const labelText = document.createElement('span');
+                labelText.className = 'text-xs text-gray-500 font-medium w-1/4 flex-shrink-0 whitespace-nowrap overflow-hidden text-ellipsis';
+                labelText.textContent = d.label;
+
+                const barTrack = document.createElement('div');
+                barTrack.className = 'flex-grow bg-gray-200 rounded-full h-4 relative mx-2';
+
+                const barFill = document.createElement('div');
+                barFill.className = 'h-full rounded-full transition-all duration-500 ease-out transform group-hover:scale-y-110';
+                barFill.style.width = `${(d.value / maxVal) * 100}%`;
+                barFill.style.backgroundImage = `linear-gradient(to right, ${colorStart}, ${colorEnd})`;
+
+                const valueText = document.createElement('span');
+                valueText.className = 'text-xs font-semibold text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-1';
+                valueText.textContent = d.value;
+
+                barTrack.appendChild(barFill);
+                barGroup.appendChild(labelText);
+                barGroup.appendChild(barTrack);
+                barGroup.appendChild(valueText);
+                container.appendChild(barGroup);
+            });
+        }
+
+        // Function to render a multi-line chart
+        function renderMultiLineChart(elementId, data) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
+
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute('viewBox', '0 0 100 100');
+            svg.setAttribute('preserveAspectRatio', 'none');
+            svg.setAttribute('class', 'w-full h-full');
+
+            const allValues = data.pedestrians.concat(data.cyclists);
+            const maxVal = Math.max(...allValues) * 1.1;
+
+            const getPoints = (arr) => arr.map((d, i) => `${(i / (arr.length - 1)) * 100},${100 - (d / maxVal) * 100}`).join(' ');
+
+            const pedestriansPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            pedestriansPath.setAttribute('fill', 'none');
+            pedestriansPath.setAttribute('stroke', '#3B82F6');
+            pedestriansPath.setAttribute('stroke-width', '1.5');
+            pedestriansPath.setAttribute('d', `M${getPoints(data.pedestrians)}`);
+            svg.appendChild(pedestriansPath);
+
+            const cyclistsPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            cyclistsPath.setAttribute('fill', 'none');
+            cyclistsPath.setAttribute('stroke', '#22C55E');
+            cyclistsPath.setAttribute('stroke-width', '1.5');
+            cyclistsPath.setAttribute('d', `M${getPoints(data.cyclists)}`);
+            svg.appendChild(cyclistsPath);
+
+            container.appendChild(svg);
+        }
+
+        // Function to render a donut chart
+        function renderDonutChart(elementId, data, colors) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
+
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute('viewBox', '0 0 100 100');
+
+            const total = data.reduce((sum, d) => sum + d.value, 0);
+            let startAngle = 0;
+
+            data.forEach((d, i) => {
+                const percentage = d.value / total;
+                const endAngle = startAngle + (percentage * 360);
+                const largeArcFlag = percentage > 0.5 ? 1 : 0;
+
+                const startX = 50 + 40 * Math.cos(startAngle * Math.PI / 180);
+                const startY = 50 + 40 * Math.sin(startAngle * Math.PI / 180);
+                const endX = 50 + 40 * Math.cos(endAngle * Math.PI / 180);
+                const endY = 50 + 40 * Math.sin(endAngle * Math.PI / 180);
+
+                const dPath = `M 50 50 L ${startX} ${startY} A 40 40 0 ${largeArcFlag} 1 ${endX} ${endY} Z`;
+
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute('fill', colors[i % colors.length]);
+                path.setAttribute('d', dPath);
+                svg.appendChild(path);
+
+                startAngle = endAngle;
+            });
+
+            // Add the inner circle for the donut effect
+            const innerCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            innerCircle.setAttribute('cx', '50');
+            innerCircle.setAttribute('cy', '50');
+            innerCircle.setAttribute('r', '20');
+            innerCircle.setAttribute('fill', 'white');
+            svg.appendChild(innerCircle);
+
+            container.appendChild(svg);
+
+            // Add labels below the chart
+            const labelsContainer = document.createElement('div');
+            labelsContainer.className = 'pie-chart-labels';
+            data.forEach((d, i) => {
+                const label = document.createElement('div');
+                label.className = 'legend-item';
+                const colorBox = document.createElement('span');
+                colorBox.className = 'legend-color';
+                colorBox.style.backgroundColor = colors[i % colors.length];
+                label.appendChild(colorBox);
+                label.appendChild(document.createTextNode(d.label));
+                labelsContainer.appendChild(label);
+            });
+            container.parentElement.appendChild(labelsContainer);
+        }
+
+        // Function to render a line chart with gradients and fills
+        function renderLineChart(elementId, data) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
+
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute('viewBox', '0 0 100 100');
+            svg.setAttribute('preserveAspectRatio', 'none');
+            svg.setAttribute('class', 'w-full h-full');
+
+            const allValues = data.actual.concat(data.forecast);
+            const maxVal = Math.max(...allValues) * 1.1;
+
+            const getPoints = (arr) => arr.map((d, i) => `${(i / (arr.length - 1)) * 100},${100 - (d / maxVal) * 100}`).join(' ');
+
+            // Create a gradient fill area below the actual line
+            const areaPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            areaPath.setAttribute('fill', 'rgba(76, 81, 191, 0.2)');
+            areaPath.setAttribute('d', `M${getPoints(data.actual)} L 100 100 L 0 100 Z`);
+            svg.prepend(areaPath); // Prepend so it's behind the line
+
+            // Actual data line
+            const actualPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            actualPath.setAttribute('fill', 'none');
+            actualPath.setAttribute('stroke', '#4c51bf');
+            actualPath.setAttribute('stroke-width', '1.5');
+            actualPath.setAttribute('d', `M${getPoints(data.actual)}`);
+            svg.appendChild(actualPath);
+
+            // Forecast data line
+            const forecastPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            forecastPath.setAttribute('fill', 'none');
+            forecastPath.setAttribute('stroke', '#6b7280');
+            forecastPath.setAttribute('stroke-dasharray', '3,3');
+            forecastPath.setAttribute('stroke-width', '1');
+            forecastPath.setAttribute('d', `M${getPoints(data.forecast)}`);
+            svg.appendChild(forecastPath);
+
+            container.appendChild(svg);
+        }
+
+        // Modal Functionality
+        const modal = document.getElementById('project-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+
+        function openProjectModal(project) {
+            document.getElementById('modal-title').textContent = project.title;
+            document.getElementById('modal-image').src = project.image;
+            document.getElementById('modal-description').textContent = project.description;
+            modal.classList.add('is-visible');
+        }
+
+        function closeProjectModal() {
+            modal.classList.remove('is-visible');
+        }
+
+        closeModalBtn.addEventListener('click', closeProjectModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeProjectModal();
+            }
+        });
+
+        // Add click listeners to project cards
+        document.querySelectorAll('.card[data-project-id]').forEach(card => {
+            card.addEventListener('click', () => {
+                const projectId = parseInt(card.dataset.projectId);
+                openProjectModal(projects[projectId]);
+            });
+        });
+
+        // Render all charts on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderHorizontalBarChart('productivity-chart', productivityData, '#4c51bf', '#667eea');
+            renderMultiLineChart('mobility-chart', mobilityData);
+            renderVerticalBarChart('supply-chain-chart', supplyChainData, '#9B2C2C', '#F56565');
+            renderDonutChart('churn-chart', churnData, ['#4F46E5', '#3B82F6', '#667eea', '#8B5CF6']);
+            renderLineChart('sales-chart', salesData);
+            renderDonutChart('segmentation-chart', segmentationData, ['#10B981', '#3B82F6', '#F59E0B', '#EF4444']);
+        });
+    </script>
+</body>
+
+</html>
